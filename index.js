@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server');
 
 //connect to database
 const mongoose = require('mongoose');
@@ -7,13 +7,13 @@ const resolvers = require('./graphql/resolvers/index.js')
 
 const { MONGODB } = require('./config.js')
 
-
+const pubsub = new PubSub();
 
 // to make sure you get all of the data back from the response and request from the 200 http call use context
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({req}) => ({req})
+    context: ({req}) => ({req, pubsub})
 });
 
 mongoose.connect(MONGODB, {useNewUrlParser: true}).then(() => {
